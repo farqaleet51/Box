@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading App Plans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 1000px;
+            max-width: 95%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .welcome-section {
+            flex: 1;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .payment-section {
+            flex: 1.5;
+            padding: 50px 40px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #777;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #2575fc;
+            border-bottom: 3px solid #2575fc;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-header {
+            margin-bottom: 25px;
+        }
+
+        .form-header h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4a7dff;
+            box-shadow: 0 0 0 3px rgba(74, 125, 255, 0.2);
+        }
+
+        .card-details {
+            display: flex;
+            gap: 15px;
+        }
+
+        .card-details .input-group {
+            flex: 1;
+        }
+
+        .payment-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+        }
+
+        .plans-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .plan-card {
+            flex: 1;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: #4a7dff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-card.selected {
+            border-color: #4a7dff;
+            background: rgba(74, 125, 255, 0.05);
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2575fc;
+            margin-bottom: 15px;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            color: #777;
+            font-weight: 500;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-features li i {
+            color: #4a7dff;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .select-plan {
+            padding: 10px 20px;
+            background: #4a7dff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-plan:hover {
+            background: #3a6de0;
+        }
+
+        .box-icon {
+            margin-top: 30px;
+            font-size: 80px;
+            opacity: 0.8;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .nav-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .secure-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #28a745;
+            font-size: 14px;
+        }
+
+        .secure-notice i {
+            margin-right: 8px;
+        }
+
+        .popular-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            position: absolute;
+            top: -10px;
+            right: 20px;
+        }
+
+        .plan-card {
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .welcome-section {
+                padding: 30px 20px;
+            }
+            
+            .payment-section {
+                padding: 30px 20px;
+            }
+            
+            .plans-container {
+                flex-direction: column;
+            }
+            
+            .card-details {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .nav-link {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 20px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="Lastui.html" class="nav-link">
+            <i class="fas fa-arrow-left"></i> Back to LastUI
+        </a>
+        
+        <div class="welcome-section">
+            <h1>Choose Your Trading Plan</h1>
+            <p>Select the perfect plan for your trading needs and unlock advanced features to maximize your profits.</p>
+            <div class="box-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+        
+        <div class="payment-section">
+            <div class="tabs">
+                <div class="tab active" data-tab="payment">Payment Info</div>
+                <div class="tab" data-tab="plans">Select Plan</div>
+            </div>
+            
+            <!-- Payment Form -->
+            <div class="form-container active" id="payment-form">
+                <div class="form-header">
+                    <h2>Payment Information</h2>
+                    <p>Enter your card details to activate your trading plan</p>
+                </div>
+                
+                <form id="paymentForm">
+                    <div class="input-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" placeholder="Enter name as shown on card">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    </div>
+                    
+                    <div class="card-details">
+                        <div class="input-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" placeholder="MM/YY">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="zip-code">ZIP / Postal Code</label>
+                        <input type="text" id="zip-code" placeholder="Enter your ZIP code">
+                    </div>
+                    
+                    <a href="Index.html" class="payment-button">Activate Trading Plan</a>
+                    
+                    <div class="secure-notice">
+                        <i class="fas fa-lock"></i> Your payment information is secure and encrypted
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Plans Selection -->
+            <div class="form-container" id="plans-form">
+                <div class="form-header">
+                    <h2>Select Your Trading Plan</h2>
+                    <p>Choose the plan that matches your trading strategy and goals</p>
+                </div>
+                
+                <div class="plans-container">
+                    <div class="plan-card">
+                        <div class="plan-name">Starter</div>
+                        <div class="plan-price">$29<span>/month</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Basic Chart Analysis</li>
+                            <li><i class="fas fa-check"></i> 5 Trading Indicators</li>
+                            <li><i class="fas fa-check"></i> Real-time Market Data</li>
+                            <li><i class="fas fa-check"></i> Email Support</li>
+                            <li><i class="fas fa-times"></i> Advanced AI Signals</li>
+                            <li><i class="fas fa-times"></i> Portfolio Analytics</li>
+                            <li><i class="fas fa-times"></i> Priority Support</li>
+                        </ul>
+                        <button class="select-plan">Select Starter</button>
+                    </div>
+                    
+                    <div class="plan-card selected">
+                        <div class="popular-badge">MOST POPULAR</div>
+                        <div class="plan-name">Pro Trader</div>
+                        <div class="plan-price">$79<span>/month</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Advanced Chart Tools</li>
+                            <li><i class="fas fa-check"></i> 25+ Trading Indicators</li>
+                            <li><i class="fas fa-check"></i> Real-time Alerts</li>
+                            <li><i class="fas fa-check"></i> AI Trading Signals</li>
+                            <li><i class="fas fa-check"></i> Portfolio Analytics</li>
+                            <li><i class="fas fa-check"></i> Priority Support</li>
+                            <li><i class="fas fa-times"></i> Custom Indicators</li>
+                        </ul>
+                        <button class="select-plan">Select Pro</button>
+                    </div>
+                    
+                    <div class="plan-card">
+                        <div class="plan-name">Elite</div>
+                        <div class="plan-price">$149<span>/month</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> All Pro Features</li>
+                            <li><i class="fas fa-check"></i> Custom Indicators</li>
+                            <li><i class="fas fa-check"></i> Advanced AI Algorithms</li>
+                            <li><i class="fas fa-check"></i> 24/7 Premium Support</li>
+                            <li><i class="fas fa-check"></i> Risk Management Tools</li>
+                            <li><i class="fas fa-check"></i> API Access</li>
+                            <li><i class="fas fa-check"></i> Personal Account Manager</li>
+                        </ul>
+                        <button class="select-plan">Select Elite</button>
+                    </div>
+                </div>
+                
+                <a href="Lastui.html" class="payment-button" style="margin-top: 30px; display: block; text-align: center;">Continue to Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and forms
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding form
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-form`).classList.add('active');
+            });
+        });
+
+        // Plan selection functionality
+        document.querySelectorAll('.plan-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            });
+        });
+
+        // Select plan buttons
+        document.querySelectorAll('.select-plan').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = button.closest('.plan-card');
+                document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                // Switch to payment tab when a plan is selected
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+                document.querySelector('.tab[data-tab="payment"]').classList.add('active');
+                document.getElementById('payment-form').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
