@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOX</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --ios-bg: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+      --ios-card: rgba(255, 255, 255, 0.08);
+      --ios-card-border: rgba(255, 255, 255, 0.12);
+      --ios-primary: #007AFF;
+      --ios-secondary: #5856D6;
+      --ios-success: #34C759;
+      --ios-danger: #FF3B30;
+      --ios-text: #FFFFFF;
+      --ios-text-secondary: rgba(255, 255, 255, 0.7);
+      --ios-blur: blur(20px);
+      --ios-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    :root[data-theme="light"] {
+      --ios-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --ios-card: rgba(255, 255, 255, 0.9);
+      --ios-card-border: rgba(0, 0, 0, 0.1);
+      --ios-primary: #007AFF;
+      --ios-secondary: #5856D6;
+      --ios-success: #34C759;
+      --ios-danger: #FF3B30;
+      --ios-text: #1d1d1f;
+      --ios-text-secondary: rgba(0, 0, 0, 0.6);
+      --ios-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    body {
+      margin: 0;
+      background: var(--ios-bg);
+      color: var(--ios-text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .container {
+      display: flex;
+      min-height: calc(100vh - 20px);
+      gap: 15px;
+    }
+    
+    .chart-section {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .ai-section {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    
+    .theme-toggle-btn {
+      width: 50px;
+      height: 50px;
+      background: var(--ios-card);
+      backdrop-filter: var(--ios-blur);
+      border: 1px solid var(--ios-card-border);
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--ios-shadow);
+    }
+    
+    .theme-toggle-btn:hover {
+      background: var(--ios-primary);
+      transform: scale(1.1);
+    }
+    
+    .theme-toggle-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--ios-text);
+      transition: all 0.3s ease;
+    }
+    
+    .theme-toggle-btn:hover svg {
+      fill: white;
+    }
+    
+    /* iOS Cards */
+    .ios-card {
+      background: var(--ios-card);
+      backdrop-filter: var(--ios-blur);
+      border: 1px solid var(--ios-card-border);
+      border-radius: 16px;
+      box-shadow: var(--ios-shadow);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    /* Combined Controls Section */
+    .combined-controls {
+      padding: 20px;
+      flex-shrink: 0;
+    }
+    
+    .demo-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: var(--ios-text);
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .demo-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .demo-input {
+      flex: 1;
+      min-width: 100px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--ios-card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--ios-text);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .demo-input:focus {
+      outline: none;
+      border-color: var(--ios-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .buy-btn {
+      background: var(--ios-success);
+      padding: 12px 18px;
+      font-size: 14px;
+    }
+    
+    .buy-btn:hover {
+      background: #30a14e;
+      box-shadow: 0 6px 20px rgba(52, 199, 89, 0.3);
+    }
+    
+    .sell-btn {
+      background: var(--ios-danger);
+      padding: 12px 18px;
+      font-size: 14px;
+    }
+    
+    .sell-btn:hover {
+      background: #d70015;
+      box-shadow: 0 6px 20px rgba(255, 59, 48, 0.3);
+    }
+    
+    .ios-button {
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .ios-button:hover {
+      transform: translateY(-1px);
+    }
+    
+    /* Transaction History */
+    .history-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: var(--ios-text);
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .history-list {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--ios-card-border);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      font-size: 13px;
+    }
+    
+    .transaction-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+    
+    .transaction-details {
+      flex: 1;
+    }
+    
+    .transaction-symbol {
+      font-weight: 600;
+      color: var(--ios-text);
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+    
+    .transaction-type {
+      font-size: 11px;
+      color: var(--ios-text-secondary);
+    }
+    
+    .transaction-amount {
+      text-align: right;
+    }
+    
+    .transaction-quantity {
+      font-weight: 600;
+      color: var(--ios-text);
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+    
+    .transaction-price {
+      font-size: 11px;
+      color: var(--ios-text-secondary);
+    }
+    
+    .transaction-buy {
+      border-left: 4px solid var(--ios-success);
+    }
+    
+    .transaction-sell {
+      border-left: 4px solid var(--ios-danger);
+    }
+    
+    /* Extended Graph Container */
+    .tradingview-widget-container {
+      flex: 1;
+      border-radius: 0;
+      overflow: hidden;
+      min-height: 550px;
+    }
+    
+    /* AI Chat Styles */
+    .ai-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      text-align: center;
+      color: var(--ios-text);
+      font-weight: 600;
+    }
+    
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .message {
+      padding: 12px 16px;
+      border-radius: 16px;
+      max-width: 85%;
+      line-height: 1.4;
+      position: relative;
+      animation: messageAppear 0.3s ease-out;
+      font-size: 14px;
+    }
+    
+    @keyframes messageAppear {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .user-message {
+      background: var(--ios-primary);
+      margin-left: auto;
+      border-bottom-right-radius: 6px;
+    }
+    
+    .ai-message {
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom-left-radius: 6px;
+    }
+    
+    .chat-input-container {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: calc(25% - 30px);
+      min-width: 250px;
+      display: flex;
+      padding: 12px;
+      background: var(--ios-card);
+      backdrop-filter: var(--ios-blur);
+      border: 1px solid var(--ios-card-border);
+      border-radius: 16px;
+      box-shadow: var(--ios-shadow);
+      z-index: 100;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--ios-card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--ios-text);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--ios-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .chat-send {
+      margin-left: 10px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      background: var(--ios-primary);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .chat-send:hover {
+      background: #0066cc;
+      transform: translateY(-1px);
+    }
+    
+    .loading-dots {
+      display: inline-block;
+      position: relative;
+      width: 40px;
+      height: 20px;
+    }
+    
+    .loading-dots div {
+      position: absolute;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ios-text-secondary);
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    
+    .loading-dots div:nth-child(1) {
+      left: 6px;
+      animation: loading-dots1 0.6s infinite;
+    }
+    
+    .loading-dots div:nth-child(2) {
+      left: 6px;
+      animation: loading-dots2 0.6s infinite;
+    }
+    
+    .loading-dots div:nth-child(3) {
+      left: 26px;
+      animation: loading-dots2 0.6s infinite;
+    }
+    
+    .loading-dots div:nth-child(4) {
+      left: 45px;
+      animation: loading-dots3 0.6s infinite;
+    }
+    
+    @keyframes loading-dots1 {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes loading-dots3 {
+      0% { transform: scale(1); }
+      100% { transform: scale(0); }
+    }
+    
+    @keyframes loading-dots2 {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(19px, 0); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .ai-section {
+        min-width: auto;
+      }
+      
+      .demo-controls {
+        flex-direction: column;
+      }
+      
+      .chat-input-container {
+        width: calc(100% - 30px);
+        right: 15px;
+        left: 15px;
+        min-width: auto;
+      }
+      
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+      }
+      
+      .theme-toggle-btn {
+        width: 44px;
+        height: 44px;
+      }
+      
+      .tradingview-widget-container {
+        min-height: 400px;
+      }
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--ios-primary);
+      border-radius: 2px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0066cc;
+    }
+    .ai-section{
+        min-height: 700px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <div class="theme-toggle-btn" id="themeToggle">
+      <svg id="themeIcon" viewBox="0 0 24 24">
+        <path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5S14.76,7,12,7L12,7z M2,13h2c0.55,0,1-0.45,1-1s-0.45-1-1-1H2c-0.55,0-1,0.45-1,1 S1.45,13,2,13z M20,13h2c0.55,0,1-0.45,1-1s-0.45-1-1-1h-2c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2 c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M6.34,7.16 l-1.42-1.42c-0.39-0.39-1.02-0.39-1.41,0c-0.39,0.39-0.39,1.02,0,1.41l1.42,1.42c0.39,0.39,1.02,0.39,1.41,0 C6.73,8.18,6.73,7.55,6.34,7.16z M19.08,18.92c-0.39,0.39-1.02,0.39-1.41,0l-1.42-1.42c-0.39-0.39-0.39-1.02,0-1.41 c0.39-0.39,1.02-0.39,1.41,0l1.42,1.42C19.47,17.9,19.47,18.53,19.08,18.92z M7.16,17.66c0.39,0.39,1.02,0.39,1.41,0 c0.39-0.39,0.39-1.02,0-1.41l-1.42-1.42c-0.39-0.39-1.02-0.39-1.41,0c-0.39,0.39-0.39,1.02,0,1.41L7.16,17.66z M18.92,5.08 c0.39,0.39,0.39,1.02,0,1.41l-1.42,1.42c-0.39,0.39-1.02,0.39-1.41,0c-0.39-0.39-0.39-1.02,0-1.41l1.42-1.42 C17.9,4.69,18.53,4.69,18.92,5.08z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="chart-section">
+      <!-- TradingView Widget with Built-in Search -->
+      <div class="ios-card tradingview-widget-container">
+        <div id="tradingview_chart"></div>
+      </div>
+      
+      <!-- Combined Controls & History -->
+      <div class="ios-card combined-controls">
+        <div class="demo-title">Trading Controls</div>
+        
+        <div class="demo-controls">
+          <input type="number" id="quantityInput" class="demo-input" placeholder="Quantity" value="1" min="1">
+          <input type="number" id="priceInput" class="demo-input" placeholder="Price" step="0.01">
+          <button class="ios-button buy-btn" id="buyButton">Buy</button>
+          <button class="ios-button sell-btn" id="sellButton">Sell</button>
+        </div>
+        
+        <div class="history-title">Transaction History</div>
+        <div class="history-list" id="transactionList">
+          <!-- Transactions will be added here dynamically -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- AI Assistant Section -->
+    <div class="ai-section">
+      <div class="ios-card" style="padding: 20px;">
+        <div class="ai-title">BOX</div>
+        
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+              Welcome! I'm BOX in Beta.7.2 . Ask me anything about trading strategies, technical analysis, market trends, or investment advice!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Chat Input -->
+  <div class="chat-input-container">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Message Trading Assistant...">
+    <button class="chat-send" id="chatSend">Send</button>
+  </div>
+
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+    // Default symbol
+    let currentSymbol = "BITSTAMP:BTCUSD";
+    let transactionHistory = [];
+    let currentTheme = 'dark';
+    let chatHistory = [];
+
+    // Local Storage Keys
+    const STORAGE_KEYS = {
+      TRANSACTIONS: 'trading_transactions',
+      THEME: 'trading_theme',
+      CHAT_HISTORY: 'trading_chat_history'
+    };
+
+    // Local Storage Functions
+    function saveToLocalStorage(key, data) {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+    }
+
+    function loadFromLocalStorage(key) {
+      try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+      } catch (error) {
+        console.error('Error loading from localStorage:', error);
+        return null;
+      }
+    }
+
+    // Load saved data on page load
+    function loadSavedData() {
+      // Load theme
+      const savedTheme = loadFromLocalStorage(STORAGE_KEYS.THEME);
+      if (savedTheme) {
+        currentTheme = savedTheme;
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon();
+      }
+
+      // Load transactions
+      const savedTransactions = loadFromLocalStorage(STORAGE_KEYS.TRANSACTIONS);
+      if (savedTransactions && Array.isArray(savedTransactions)) {
+        transactionHistory = savedTransactions;
+        updateTransactionHistory();
+      }
+
+      // Load chat history
+      const savedChatHistory = loadFromLocalStorage(STORAGE_KEYS.CHAT_HISTORY);
+      if (savedChatHistory && Array.isArray(savedChatHistory)) {
+        chatHistory = savedChatHistory;
+        updateChatHistory();
+      }
+    }
+
+    // Update chat history display
+    function updateChatHistory() {
+      const chatMessages = document.getElementById('chatMessages');
+      chatMessages.innerHTML = '';
+      
+      chatHistory.forEach(chat => {
+        const message = document.createElement('div');
+        message.className = `message ${chat.role === 'user' ? 'user-message' : 'ai-message'}`;
+        message.textContent = chat.content;
+        chatMessages.appendChild(message);
+      });
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Theme management
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      saveToLocalStorage(STORAGE_KEYS.THEME, currentTheme);
+      
+      // Update TradingView theme
+      if (window.tvWidget) {
+        window.tvWidget.remove();
+      }
+      initTradingView(currentSymbol);
+      
+      updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+      const themeIcon = document.getElementById('themeIcon');
+      if (currentTheme === 'light') {
+        themeIcon.innerHTML = '<path d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"/>';
+      } else {
+        themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5S14.76,7,12,7L12,7z M2,13h2c0.55,0,1-0.45,1-1s-0.45-1-1-1H2c-0.55,0-1,0.45-1,1 S1.45,13,2,13z M20,13h2c0.55,0,1-0.45,1-1s-0.45-1-1-1h-2c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2 c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M6.34,7.16 l-1.42-1.42c-0.39-0.39-1.02-0.39-1.41,0c-0.39,0.39-0.39,1.02,0,1.41l1.42,1.42c0.39,0.39,1.02,0.39,1.41,0 C6.73,8.18,6.73,7.55,6.34,7.16z M19.08,18.92c-0.39,0.39-1.02,0.39-1.41,0l-1.42-1.42c-0.39-0.39-0.39-1.02,0-1.41 c0.39-0.39,1.02-0.39,1.41,0l1.42,1.42C19.47,17.9,19.47,18.53,19.08,18.92z M7.16,17.66c0.39,0.39,1.02,0.39,1.41,0 c0.39-0.39,0.39-1.02,0-1.41l-1.42-1.42c-0.39-0.39-1.02-0.39-1.41,0c-0.39,0.39-0.39,1.02,0,1.41L7.16,17.66z M18.92,5.08 c0.39,0.39,0.39,1.02,0,1.41l-1.42,1.42c-0.39,0.39-1.02,0.39-1.41,0c-0.39-0.39-0.39-1.02,0-1.41l1.42-1.42 C17.9,4.69,18.53,4.69,18.92,5.08z"/>';
+      }
+    }
+
+    // Initialize the TradingView widget with built-in search
+    function initTradingView(symbol) {
+      // Remove existing widget if present
+      const container = document.getElementById('tradingview_chart');
+      container.innerHTML = '';
+      
+      // Create new widget with TradingView's default search enabled
+      window.tvWidget = new TradingView.widget({
+        "width": "100%",
+        "height": "100%",
+        "symbol": symbol,
+        "interval": "1",
+        "timezone": "Etc/UTC",
+        "theme": currentTheme,
+        "style": "1",
+        "locale": "en",
+        "toolbar_bg": currentTheme === 'dark' ? "#1b263b" : "#f5f7fa",
+        "enable_publishing": false,
+        "allow_symbol_change": true,
+        "hide_legend": false,
+        "save_image": false,
+        "studies": ["RSI@tv-basicstudies", "Volume@tv-basicstudies"],
+        "container_id": "tradingview_chart",
+        "show_popup_button": true,
+        "popup_width": "1000",
+        "popup_height": "650",
+        "watchlist": [
+          "BITSTAMP:BTCUSD",
+          "BINANCE:ETHUSDT", 
+          "NASDAQ:AAPL",
+          "NASDAQ:TSLA",
+          "TVC:GOLD",
+          "FX:EURUSD"
+        ],
+        "details": true,
+        "hotlist": true,
+        "calendar": true,
+        "overrides": {
+          "paneProperties.background": currentTheme === 'dark' ? "#0d1b2a" : "#ffffff",
+          "paneProperties.vertGridProperties.color": currentTheme === 'dark' ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+          "paneProperties.horzGridProperties.color": currentTheme === 'dark' ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+          "mainSeriesProperties.candleStyle.upColor": "#34C759",
+          "mainSeriesProperties.candleStyle.downColor": "#FF3B30",
+          "mainSeriesProperties.candleStyle.borderUpColor": "#34C759",
+          "mainSeriesProperties.candleStyle.borderDownColor": "#FF3B30",
+          "mainSeriesProperties.candleStyle.wickUpColor": "#34C759",
+          "mainSeriesProperties.candleStyle.wickDownColor": "#FF3B30"
+        },
+        "studies_overrides": {
+          "volume.volume.color.0": "#FF3B30",
+          "volume.volume.color.1": "#34C759",
+          "volume.volume.transparency": 70,
+          "volume.volume ma.color": "#007AFF",
+          "rsi.display": "line",
+          "rsi.linecolor": "#5856D6"
+        }
+      });
+    }
+    
+    // Add transaction to history
+    function addTransaction(type, quantity, price) {
+      const transaction = {
+        id: Date.now(),
+        type: type,
+        symbol: currentSymbol.split(':').pop(),
+        quantity: quantity,
+        price: price,
+        timestamp: new Date().toLocaleTimeString(),
+        date: new Date().toLocaleDateString()
+      };
+      
+      transactionHistory.unshift(transaction);
+      saveToLocalStorage(STORAGE_KEYS.TRANSACTIONS, transactionHistory);
+      updateTransactionHistory();
+    }
+    
+    // Update transaction history display
+    function updateTransactionHistory() {
+      const transactionList = document.getElementById('transactionList');
+      transactionList.innerHTML = '';
+      
+      if (transactionHistory.length === 0) {
+        transactionList.innerHTML = '<div style="text-align: center; color: var(--ios-text-secondary); padding: 20px; font-size: 14px;">No transactions yet</div>';
+        return;
+      }
+      
+      transactionHistory.forEach(transaction => {
+        const transactionItem = document.createElement('div');
+        transactionItem.className = `transaction-item ${transaction.type === 'buy' ? 'transaction-buy' : 'transaction-sell'}`;
+        
+        transactionItem.innerHTML = `
+          <div class="transaction-details">
+            <div class="transaction-symbol">${transaction.symbol}</div>
+            <div class="transaction-type">${transaction.type.toUpperCase()} • ${transaction.timestamp}</div>
+          </div>
+          <div class="transaction-amount">
+            <div class="transaction-quantity">${transaction.quantity} shares</div>
+            <div class="transaction-price">$${transaction.price.toFixed(2)}</div>
+          </div>
+        `;
+        
+        transactionList.appendChild(transactionItem);
+      });
+    }
+    
+    // Trading Demo Functions
+    function buyAsset() {
+      const quantity = parseFloat(document.getElementById('quantityInput').value);
+      const priceInput = document.getElementById('priceInput').value;
+      
+      if (isNaN(quantity) || quantity <= 0) {
+        alert('Please enter a valid quantity');
+        return;
+      }
+      
+      const symbolName = currentSymbol.split(':').pop();
+      const price = priceInput ? parseFloat(priceInput) : Math.random() * 1000 + 100;
+      
+      addTransaction('buy', quantity, price);
+      alert(`✅ Buy Order: ${quantity} ${symbolName} at $${price.toFixed(2)}`);
+    }
+    
+    function sellAsset() {
+      const quantity = parseFloat(document.getElementById('quantityInput').value);
+      const priceInput = document.getElementById('priceInput').value;
+      const symbolName = currentSymbol.split(':').pop();
+      
+      if (isNaN(quantity) || quantity <= 0) {
+        alert('Please enter a valid quantity');
+        return;
+      }
+      
+      const price = priceInput ? parseFloat(priceInput) : Math.random() * 1000 + 100;
+      
+      addTransaction('sell', quantity, price);
+      alert(`🔻 Sell Order: ${quantity} ${symbolName} at $${price.toFixed(2)}`);
+    }
+
+    // Advanced AI Response System with OpenAI API
+    async function generateAIResponse(question) {
+      const lowerQuestion = question.toLowerCase();
+      
+      // Try to use OpenAI API first
+      try {
+        const API_KEY = "1f1e6173-64de-47aa-945e-c34800f77460";
+        const API_URL = "https://api.openai.com/v1/chat/completions";
+        
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: "You are an expert trading assistant. Provide accurate, helpful trading advice. Be concise and practical. Focus on technical analysis, trading strategies, risk management, and market trends."
+              },
+              {
+                role: "user",
+                content: question
+              }
+            ],
+            max_tokens: 500,
+            temperature: 0.7
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.choices && data.choices[0] && data.choices[0].message) {
+            return data.choices[0].message.content;
+          }
+        }
+      } catch (error) {
+        console.log('OpenAI API failed, using fallback:', error);
+      }
+
+      // Fallback to intelligent simulated responses
+      return getIntelligentFallbackResponse(lowerQuestion);
+    }
+
+    // Intelligent fallback response system
+    function getIntelligentFallbackResponse(lowerQuestion) {
+        // --- ADVANCED INTELLIGENT FALLBACK RESPONSES ---
+
+             // 1. RSI
+            if (lowerQuestion.includes('rsi') || lowerQuestion.includes('relative strength')) {
+                return "RSI (Relative Strength Index) is a momentum oscillator measuring price movement velocity. Key levels: 70+ (overbought), 30- (oversold). Use RSI(14) for standard analysis. Look for divergences where price makes new highs but RSI doesn't—signals potential reversals. Combine with trend analysis for best results.";
+            }
+
+            // 2. Moving Average
+            if (lowerQuestion.includes('moving average') || lowerQuestion.includes('ma')) {
+                return "Moving averages smooth price data to identify trends. EMA reacts faster than SMA. Golden Cross (50-day above 200-day) = bullish; Death Cross (50-day below 200-day) = bearish. Use MAs as dynamic support/resistance. Key periods: 20, 50, 200.";
+            }
+
+            // 3. Support & Resistance
+            if (lowerQuestion.includes('support') || lowerQuestion.includes('resistance')) {
+                return "Support = buying pressure zone; Resistance = selling pressure zone. Identify via swing highs/lows, consolidation areas, and psychological levels. Multiple tests make a level stronger.";
+            }
+
+            // 4. MACD
+            if (lowerQuestion.includes('macd')) {
+                return "MACD shows trend direction and momentum. Components: MACD line, signal line, histogram. Bullish: MACD crosses above signal line, histogram positive. Bearish: MACD crosses below signal line, histogram negative. Watch for divergences with price.";
+            }
+
+            // 5. Bollinger Bands
+            if (lowerQuestion.includes('bollinger')) {
+                return "Bollinger Bands: middle SMA (20) ± 2 SD. Upper band = overbought, lower band = oversold. Narrow bands (squeeze) often precede strong moves. Breakouts from squeezes indicate trend strength.";
+            }
+
+            // 6. Trading Strategy
+            if (lowerQuestion.includes('strategy') || lowerQuestion.includes('how to trade')) {
+                return "Trading framework:\n1. Identify trend\n2. Wait for pullback to key support/resistance\n3. Look for confirmation (RSI, candlestick patterns)\n4. Enter with stop loss (1-2% risk)\n5. Target 2:1 risk-reward\nAlways trade with trend.";
+            }
+
+            // 7. Day Trading / Scalp
+            if (lowerQuestion.includes('day trading') || lowerQuestion.includes('scalp')) {
+                return "Day trading requires fast execution, strict risk management, emotional control. Focus on high-volume hours, use 1-5 min charts, tight stops, quick profits, and avoid overnight holding. Start small until consistently profitable.";
+            }
+
+            // 8. Swing Trading
+            if (lowerQuestion.includes('swing trading')) {
+                return "Swing trading captures multi-day moves. Use 4H/daily charts, hold 2-10 days. Look for breakouts from consolidation with volume. Stop losses: 3-5%, target: 5-15%. Suitable for traders who can't monitor constantly.";
+            }
+
+            // 9. Risk Management
+            if (lowerQuestion.includes('risk') || lowerQuestion.includes('management')) {
+                return "Risk rules:\n• 1-2% account per trade\n• Stop loss on every trade\n• Maintain 1:2+ risk-reward\n• Diversify assets/timeframes\n• Never add to losing positions\n• Keep trading journal\n• Take breaks to avoid burnout";
+            }
+
+            // 10. Stop Loss / Take Profit
+            if (lowerQuestion.includes('stop loss') || lowerQuestion.includes('take profit')) {
+                return "Stop Loss: below swing low (long), above swing high (short), or based on ATR. Take Profit: scale out, use trailing stops, target prior support/resistance, maintain 2:1 R:R.";
+            }
+
+            // 11. Bitcoin / Crypto
+            if (lowerQuestion.includes('bitcoin') || lowerQuestion.includes('btc') || lowerQuestion.includes('crypto')) {
+                return "Bitcoin analysis:\n• Monitor 200-day MA (trend)\n• Watch volume and institutional interest\n• Track Bitcoin dominance\n• Monitor regulations\n• Key levels: previous ATH resistance, 200-week MA support\n• Consider correlation with traditional markets";
+            }
+
+            // 12. Stock / Equity
+            if (lowerQuestion.includes('stock') || lowerQuestion.includes('equity')) {
+                return "Stock trading:\n• Avoid holding through earnings\n• Monitor sector rotation\n• Watch market breadth\n• Consider options for defined risk\n• Focus on high relative strength stocks\n• Always plan your exit before entry";
+            }
+
+            // 13. Trading Psychology
+            if (lowerQuestion.includes('psychology') || lowerQuestion.includes('emotion') || lowerQuestion.includes('mindset')) {
+                return "Trading psychology is 80% of success:\n• Stick to your plan\n• Avoid revenge trades\n• Own all trades\n• Manage fear and greed\n• Keep a journal\n• Celebrate process, not profits\n• Losses = tuition for learning";
+            }
+
+            // 14. Beginner / Start
+            if (lowerQuestion.includes('beginner') || lowerQuestion.includes('start') || lowerQuestion.includes('new')) {
+                return "Beginner roadmap:\n1. Paper trade 3-6 months\n2. Learn risk management first\n3. Start small with real money\n4. Focus on 1-2 strategies\n5. Keep a trading journal\n6. Find mentor/community\n7. Be patient\n8. Never risk money you can't afford to lose";
+            }
+
+            // 15. Candlestick Patterns
+            if (lowerQuestion.includes('candlestick') || lowerQuestion.includes('pattern')) {
+                return "Candlestick patterns signal market psychology. Key patterns: engulfing, pin bar, doji, hammer, shooting star. Combine with support/resistance for higher-probability entries.";
+            }
+
+            // 16. Divergence
+            if (lowerQuestion.includes('divergence')) {
+                return "Divergence occurs when price makes new highs/lows but indicator (RSI, MACD) does not. Bullish divergence = price down, indicator up. Bearish divergence = price up, indicator down. Often signals reversals.";
+            }
+
+            // 17. Volume Analysis
+            if (lowerQuestion.includes('volume') || lowerQuestion.includes('trading volume')) {
+                return "Volume confirms trends. Rising price + rising volume = strong trend. Rising price + falling volume = weak trend. Spikes often indicate institutional activity or liquidity grabs.";
+            }
+
+            // 18. Trendlines / Channels
+            if (lowerQuestion.includes('trendline') || lowerQuestion.includes('channel')) {
+                return "Trendlines identify direction and support/resistance. Channels mark price boundaries. Breaks indicate potential reversals or continuation.";
+            }
+
+            // 19. Fibonacci
+            if (lowerQuestion.includes('fibonacci') || lowerQuestion.includes('fib')) {
+                return "Fibonacci retracements highlight potential support/resistance levels. Common retracements: 38.2%, 50%, 61.8%. Use with trend and price action for accuracy.";
+            }
+
+            // 20. Correlation
+            if (lowerQuestion.includes('correlation')) {
+                return "Correlation measures relationship between assets. Positive correlation = move together, negative = opposite. Useful for hedging, diversification, or spotting leading indicators.";
+            }
+
+            // 21. Implied Volatility (IV)
+            if (lowerQuestion.includes('implied volatility') || lowerQuestion.includes('iv') || lowerQuestion.includes('iv crush') || lowerQuestion.includes('volatility skew')) {
+            return "Implied Volatility measures expected future price movement. High IV means expensive options and risky conditions; low IV means stability. Watch for IV Crush after news events when option prices collapse. Use IV Rank to decide when to buy/sell volatility.";
+            }
+
+            // 22. Gamma Squeeze
+            if (lowerQuestion.includes('gamma squeeze') || lowerQuestion.includes('gamma') || lowerQuestion.includes('market makers hedging')) {
+            return "Gamma squeezes occur when market makers hedge deep OTM calls by buying the underlying asset, causing explosive upward momentum. Key signs: high call OI, rising IV, and price nearing key round-number strikes.";
+            }
+
+            // 23. VIX Index
+            if (lowerQuestion.includes('vix') || lowerQuestion.includes('fear index') || lowerQuestion.includes('volatility index')) {
+            return "VIX measures market fear and expected volatility. VIX > 30 signals panic; VIX < 15 signals complacency. VIX spikes often correspond with market bottoms. SP500 and VIX are inversely correlated.";
+            }
+
+            // 24. Order Flow / Footprint
+            if (lowerQuestion.includes('order flow') || lowerQuestion.includes('footprint') || lowerQuestion.includes('delta')) {
+            return "Order flow reveals real-time buyer/seller aggression. Positive delta means aggressive buyers; negative delta means aggressive sellers. Watch for price–delta divergence to detect weak trends and reversal points.";
+            }
+
+            // 25. Depth of Market (DOM)
+            if (lowerQuestion.includes('dom') || lowerQuestion.includes('depth of market') || lowerQuestion.includes('order book')) {
+            return "DOM displays limit order liquidity. Large walls act as magnets but can be spoofed. True liquidity is where price reacts, not where orders appear. DOM is most effective on highly liquid markets like ES, NQ, and crude.";
+            }
+
+            // 26. Market Microstructure
+            if (lowerQuestion.includes('microstructure') || lowerQuestion.includes('latency') || lowerQuestion.includes('execution')) {
+            return "Market microstructure focuses on how orders interact. Market orders move price; limit orders provide liquidity. HFT firms exploit latency differences. Execution quality directly impacts profitability.";
+            }
+
+            // 27. FOMC / Fed
+            if (lowerQuestion.includes('fomc') || lowerQuestion.includes('fed') || lowerQuestion.includes('interest rate')) {
+            return "FOMC events create volatility shifts. Pre-FOMC is slow as algorithms suppress volatility. Post-FOMC often brings liquidity sweeps before true direction forms. Avoid trading minutes before announcements.";
+            }
+
+            // 28. Seasonality
+            if (lowerQuestion.includes('seasonality') || lowerQuestion.includes('monthly trends') || lowerQuestion.includes('quarter trends')) {
+            return "Markets follow seasonal tendencies: January effect, Q4 rallies, and summer low-volume conditions. Use seasonal data as directional macro bias but not for exact entries.";
+            }
+
+            // 29. Currency Strength
+            if (lowerQuestion.includes('currency strength') || lowerQuestion.includes('dxy') || lowerQuestion.includes('forex strength')) {
+            return "Currency strength matters more than single charts. Strong DXY weakens global equities and commodities; weak DXY fuels rallies. Use currency strength matrices to pair strong vs weak currencies.";
+            }
+
+            // 30. Arbitrage
+            if (lowerQuestion.includes('arbitrage') || lowerQuestion.includes('triangular') || lowerQuestion.includes('spread trading')) {
+            return "Arbitrage strategies exploit pricing inefficiencies across markets. Triangular arbitrage uses mispriced FX pairs. Statistical arbitrage requires mean-reversion behavior and strict risk management.";
+            }
+
+            // 31. Mean Reversion
+            if (lowerQuestion.includes('mean reversion') || lowerQuestion.includes('standard deviation') || lowerQuestion.includes('revert')) {
+            return "Mean reversion strategies assume price returns to equilibrium. Tools: Bollinger Bands, VWAP, Z-score deviations. Works in ranging markets, fails in high-trend markets.";
+            }
+
+            // 32. Trend Following
+            if (lowerQuestion.includes('trend following') || lowerQuestion.includes('breakout model')) {
+            return "Trend following uses moving averages, Donchian channels, and volatility filters. Enter on breakouts, ride trends with trailing stops. Works best in strong momentum environments.";
+            }
+
+            // 33. Statistical Models
+            if (lowerQuestion.includes('statistical') || lowerQuestion.includes('regression') || lowerQuestion.includes('z-score')) {
+            return "Advanced trading uses regression channels, z-score deviations, and correlation matrices. Z-score > 2 often signals overextended price. Combine with volume to reduce false signals.";
+            }
+
+            // 34. Institutional Levels
+            if (lowerQuestion.includes('round numbers') || lowerQuestion.includes('00 levels') || lowerQuestion.includes('figure level')) {
+            return "Institutions trade heavily around round numbers (100, 500, 1000). These levels attract liquidity and often cause whipsaws. Great zones for liquidity grabs before real direction starts.";
+            }
+
+            // 35. Dark Pools
+            if (lowerQuestion.includes('dark pool') || lowerQuestion.includes('off exchange')) {
+            return "Dark pools reveal institutional orders executed off-exchange. Large dark prints near key levels often predict market direction. Watch for repeated prints at specific price zones.";
+            }
+
+            // 36. Market Cycles
+            if (lowerQuestion.includes('market cycle') || lowerQuestion.includes('accumulation') || lowerQuestion.includes('distribution')) {
+            return "Markets rotate through accumulation, markup, distribution, and markdown. Best trades occur early in accumulation (low volatility) and early in markdown (high volatility breakdown).";
+            }
+
+            // 37. Backtesting
+            if (lowerQuestion.includes('backtest') || lowerQuestion.includes('historical test')) {
+            return "A strong backtest has high expectancy, low drawdown, and consistency. Beware of overfitting. Use walk-forward testing to confirm robustness and avoid curve-fitting bias.";
+            }
+
+            // 38. Sharpe / Sortino
+            if (lowerQuestion.includes('sharpe') || lowerQuestion.includes('sortino')) {
+            return "Sharpe measures return vs volatility; Sortino penalizes downside volatility only. Sharpe > 1.5 or Sortino > 2 indicates a strong system. Useful for strategy validation.";
+            }
+
+            // 39. Liquidity Voids / FVG
+            if (lowerQuestion.includes('liquidity void') || lowerQuestion.includes('fvg') || lowerQuestion.includes('fair value gap')) {
+            return "Liquidity voids (FVGs) form when price moves too quickly, leaving unfilled orders. Price often revisits these voids later. Combine FVGs with structure breaks for sniper entries.";
+            }
+
+            // 40. HTF Bias
+            if (lowerQuestion.includes('htf bias') || lowerQuestion.includes('overall bias') || lowerQuestion.includes('higher timeframe')) {
+            return "Higher timeframe structure (daily/weekly) controls direction. LTF entries should align with HTF premium/discount zones for maximum accuracy and minimal drawdown.";
+            }
+
+            // 41. Reversal Patterns
+            if (lowerQuestion.includes('reversal') || lowerQuestion.includes('double top') || lowerQuestion.includes('engulfing')) {
+            return "True reversals begin with liquidity grabs, displacement, break of structure (BOS), then a fair value gap retest. Patterns are secondary to liquidity + structure shifts.";
+            }
+
+            // 42. Correlation Breakdown
+            if (lowerQuestion.includes('correlation breakdown') || lowerQuestion.includes('decoupling')) {
+            return "A correlation breakdown occurs when previously correlated assets diverge. This often signals major structural shifts and upcoming volatility expansion.";
+            }
+
+            // 43. Trading Sessions
+            if (lowerQuestion.includes('london session') || lowerQuestion.includes('new york session') || lowerQuestion.includes('sessions')) {
+            return "London = liquidity injection. New York = continuation + reversals. Asia = range formation. Smart money trades active sessions, not low-volume hours.";
+            }
+
+            // 44. Fractals
+            if (lowerQuestion.includes('fractals') || lowerQuestion.includes('multi fractal')) {
+            return "Markets are fractal; patterns repeat across timeframes. Fractals mark swing highs/lows. Combine fractal points with liquidity sweep logic for precision entries.";
+            }
+
+            // 45. Psychological Levels
+            if (lowerQuestion.includes('psychological level') || lowerQuestion.includes('50 level') || lowerQuestion.includes('quarter level')) {
+            return "Institutions respect quarter levels (25/50/75). 50% mid-level is highly reactive. Excellent for scaling in/out and spotting algorithmic behavior.";
+            }
+
+            // 46. Crypto Funding Rates
+            if (lowerQuestion.includes('funding rate') || lowerQuestion.includes('funding')) {
+            return "Positive funding means longs pay shorts → overly bullish sentiment. Negative funding means shorts pay longs → bearish exhaustion. Extreme funding precedes major reversals.";
+            }
+
+            // 47. Open Interest
+            if (lowerQuestion.includes('open interest') || lowerQuestion.includes('oi')) {
+            return "Rising OI with rising price = strong bullish trend. Rising OI with falling price = strong bearish trend. Falling OI suggests position unwinding or profit-taking.";
+            }
+
+            // 48. Risk/Reward Modeling
+            if (lowerQuestion.includes('risk reward') || lowerQuestion.includes('rr') || lowerQuestion.includes('reward ratio')) {
+            return "Advanced traders focus on asymmetric risk-to-reward setups (1:3 or higher). Win rate is irrelevant if risk is controlled. Protect downside, expand upside.";
+            }
+
+            // 49. Time-Based Entries
+            if (lowerQuestion.includes('time entry') || lowerQuestion.includes('time cycle') || lowerQuestion.includes('timing')) {
+            return "Markets respect time-based reversals. Key turning points: NY open, 10:30 EST liquidity shift, and London close. Use time + liquidity for precision entries.";
+            }
+
+            // 50. Execution Quality
+            if (lowerQuestion.includes('execution') || lowerQuestion.includes('slippage') || lowerQuestion.includes('fill')) {
+            return "Execution quality determines strategy success. Slippage and spreads can kill profitable systems. Use limit orders during volatile conditions to reduce execution loss.";
+            }
+
+            // --- Default fallback ---
+            return "I would be happy to help with trading analysis! Could you clarify what you'd like to know? For example: indicators, strategies, risk management, market analysis, or trading psychology?";
+    }
+    
+    // AI Chat functionality
+    async function askAI(question) {
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      
+      // Add user message
+      const userMessage = document.createElement('div');
+      userMessage.className = 'message user-message';
+      userMessage.textContent = question;
+      chatMessages.appendChild(userMessage);
+      
+      // Add to chat history
+      chatHistory.push({ role: 'user', content: question });
+      saveToLocalStorage(STORAGE_KEYS.CHAT_HISTORY, chatHistory);
+      
+      // Clear input
+      chatInput.value = '';
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Show loading indicator
+      const loadingMessage = document.createElement('div');
+      loadingMessage.className = 'message ai-message';
+      loadingMessage.innerHTML = '<div class="loading-dots"><div></div><div></div><div></div><div></div></div>';
+      chatMessages.appendChild(loadingMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Generate response
+      setTimeout(async () => {
+        try {
+          // Remove loading indicator
+          chatMessages.removeChild(loadingMessage);
+          
+          // Generate AI response
+          const aiResponse = await generateAIResponse(question);
+          const aiMessage = document.createElement('div');
+          aiMessage.className = 'message ai-message';
+          aiMessage.textContent = aiResponse;
+          chatMessages.appendChild(aiMessage);
+          
+          // Add to chat history
+          chatHistory.push({ role: 'assistant', content: aiResponse });
+          saveToLocalStorage(STORAGE_KEYS.CHAT_HISTORY, chatHistory);
+          
+        } catch (error) {
+          console.error('Error generating response:', error);
+          // Remove loading indicator
+          chatMessages.removeChild(loadingMessage);
+          
+          const errorMessage = document.createElement('div');
+          errorMessage.className = 'message ai-message';
+          errorMessage.textContent = "I'm here to help with your trading questions! What would you like to know about technical analysis, trading strategies, or market trends?";
+          chatMessages.appendChild(errorMessage);
+          
+          chatHistory.push({ role: 'assistant', content: errorMessage.textContent });
+          saveToLocalStorage(STORAGE_KEYS.CHAT_HISTORY, chatHistory);
+        }
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+    
+    // Initialize with default symbol
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved data first
+      loadSavedData();
+      
+      // Initialize TradingView
+      initTradingView(currentSymbol);
+      
+      // Set up theme toggle
+      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      
+      // Set up trading demo buttons
+      document.getElementById('buyButton').addEventListener('click', buyAsset);
+      document.getElementById('sellButton').addEventListener('click', sellAsset);
+      
+      // Set up chat functionality
+      document.getElementById('chatSend').addEventListener('click', function() {
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput.value.trim() !== '') {
+          askAI(chatInput.value);
+        }
+      });
+      
+      document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          if (this.value.trim() !== '') {
+            askAI(this.value);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
