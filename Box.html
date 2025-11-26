@@ -845,7 +845,85 @@
     // Intelligent fallback response system
     function getIntelligentFallbackResponse(lowerQuestion) {
         // --- ADVANCED INTELLIGENT FALLBACK RESPONSES ---
+             // End-chat detector
+              // --- STAGE 1: Detect end-chat USING ONLY IF CONDITIONS ---
+                if (
+                    message.includes("bye") ||
+                    message.includes("goodbye") ||
+                    message.includes("ok bye") ||
+                    message.includes("bye bye") ||
+                    message.includes("bye for now") ||
+                    message.includes("ok thanks bye") ||
+                    message.includes("thank you bye") ||
 
+                    message.includes("i’m done") ||
+                    message.includes("im done") ||
+                    message.includes("that’s all") ||
+                    message.includes("thats all") ||
+                    message.includes("that’s it") ||
+                    message.includes("thats it") ||
+                    message.includes("that’s enough") ||
+                    message.includes("thats enough") ||
+                    message.includes("i’m finished") ||
+                    message.includes("im finished") ||
+                    message.includes("we’re done") ||
+                    message.includes("were done") ||
+
+                    message.includes("end chat") ||
+                    message.includes("end") ||
+                    message.includes("stop") ||
+                    message.includes("finish") ||
+                    message.includes("you can stop") ||
+                    message.includes("no more") ||
+                    message.includes("enough") ||
+                    message.includes("okay stop") ||
+                    message.includes("exit") ||
+                    message.includes("quit") ||
+                    message.includes("close") ||
+                    message.includes("done") ||
+
+                    message.includes("thanks") ||
+                    message.includes("thank you") ||
+                    message.includes("thanks a lot") ||
+                    message.includes("thanks that’s all") ||
+                    message.includes("thanks thats all") ||
+                    message.includes("appreciate it") ||
+                    message.includes("cheers") ||
+
+                    message.includes("cya") ||
+                    message.includes("cya later") ||
+                    message.includes("gtg") ||
+                    message.includes("g2g") ||
+                    message.includes("peace") ||
+                    message.includes("laters") ||
+                    message.includes("alright bye") ||
+
+                    message.includes("leave it") ||
+                    message.includes("never mind") ||
+                    message.includes("nevermind") ||
+                    message.includes("forget it") ||
+                    message.includes("ignore") ||
+                    message.includes("cancel") ||
+                    message.includes("cancel this") ||
+                    message.includes("stop responding") ||
+
+                    message.includes("by") ||
+                    message.includes("bey") ||
+                    message.includes("bie") ||
+                    message.includes("gud bye") ||
+                    message.includes("tnks") ||
+                    message.includes("thx") ||
+                    message.includes("k bye") ||
+                    message.includes("ok bi")
+                ) {
+                    return "Is there anything else you would like me to help you with?";
+                }
+
+                // --- STAGE 2: Next user message after ending ---
+                if (endedOnce) {
+                    return "ok here to help you";
+                }
+           
              // 1. RSI
             if (lowerQuestion.includes('rsi') || lowerQuestion.includes('relative strength')) {
                 return "RSI (Relative Strength Index) is a momentum oscillator measuring price movement velocity. Key levels: 70+ (overbought), 30- (oversold). Use RSI(14) for standard analysis. Look for divergences where price makes new highs but RSI doesn't—signals potential reversals. Combine with trend analysis for best results.";
